@@ -3,10 +3,12 @@ import { PageHeader } from '@/components/admin/page-header'
 import { SettingsForm } from '@/components/admin/settings-form'
 import { settingsRepository } from '@/server/repositories'
 import { DEFAULT_SETTINGS } from '@/server/services/defaults'
+import { requireAdmin } from '@/server/auth'
 
 export const metadata: Metadata = { title: 'Paramètres' }
 
 export default async function SettingsPage() {
+  await requireAdmin()
   const s = (await settingsRepository.get()) ?? DEFAULT_SETTINGS
   return (
     <>

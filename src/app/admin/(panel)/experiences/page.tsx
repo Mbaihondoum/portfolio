@@ -2,10 +2,12 @@ import type { Metadata } from 'next'
 import { ExperienceManager } from '@/components/admin/experience-manager'
 import { PageHeader } from '@/components/admin/page-header'
 import { experiencesRepository } from '@/server/repositories'
+import { requireAdmin } from '@/server/auth'
 
 export const metadata: Metadata = { title: 'Parcours' }
 
 export default async function ExperiencesAdminPage() {
+  await requireAdmin()
   const items = await experiencesRepository.list()
   return (
     <>

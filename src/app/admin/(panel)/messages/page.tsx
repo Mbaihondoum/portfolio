@@ -7,10 +7,12 @@ import { cn } from '@/lib/cn'
 import { formatDate } from '@/lib/format'
 import { deleteMessage, setMessageStatus } from '@/server/actions/admin'
 import { messagesRepository } from '@/server/repositories'
+import { requireAdmin } from '@/server/auth'
 
 export const metadata: Metadata = { title: 'Messages' }
 
 export default async function MessagesPage({ searchParams }: PageProps<'/admin/messages'>) {
+  await requireAdmin()
   const { view } = await searchParams
   const filter = view === 'archived' ? 'archived' : 'inbox'
   const messages = await messagesRepository.list(filter)

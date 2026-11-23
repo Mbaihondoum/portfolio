@@ -4,10 +4,12 @@ import { PageHeader } from '@/components/admin/page-header'
 import { ProjectForm } from '@/components/admin/project-form'
 import { uuidSchema } from '@/lib/validators'
 import { projectsRepository } from '@/server/repositories'
+import { requireAdmin } from '@/server/auth'
 
 export const metadata: Metadata = { title: 'Modifier le projet' }
 
 export default async function EditProjectPage({ params }: PageProps<'/admin/projects/[id]'>) {
+  await requireAdmin()
   const { id } = await params
   if (!uuidSchema.safeParse(id).success) notFound()
   const p = await projectsRepository.findById(id)

@@ -2,10 +2,12 @@ import type { Metadata } from 'next'
 import { PageHeader } from '@/components/admin/page-header'
 import { SkillsManager } from '@/components/admin/skills-manager'
 import { skillsRepository } from '@/server/repositories'
+import { requireAdmin } from '@/server/auth'
 
 export const metadata: Metadata = { title: 'Compétences' }
 
 export default async function SkillsAdminPage() {
+  await requireAdmin()
   const skills = await skillsRepository.list()
   return (
     <>

@@ -3,10 +3,12 @@ import { PageHeader } from '@/components/admin/page-header'
 import { ProjectsTable } from '@/components/admin/projects-table'
 import { LinkButton } from '@/components/ui/button'
 import { projectsRepository } from '@/server/repositories'
+import { requireAdmin } from '@/server/auth'
 
 export const metadata: Metadata = { title: 'Projets' }
 
 export default async function ProjectsAdminPage() {
+  await requireAdmin()
   const projects = await projectsRepository.listAll()
   return (
     <>

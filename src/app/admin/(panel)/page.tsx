@@ -5,6 +5,7 @@ import { RankList, ViewsChart } from '@/components/admin/dashboard-charts'
 import { cn } from '@/lib/cn'
 import { getAnalyticsDashboard } from '@/server/services/analytics'
 import { messagesRepository, projectsRepository } from '@/server/repositories'
+import { requireAdmin } from '@/server/auth'
 
 export const metadata: Metadata = { title: 'Tableau de bord' }
 
@@ -25,6 +26,7 @@ const country = (code: string) => {
 }
 
 export default async function DashboardPage({ searchParams }: PageProps<'/admin'>) {
+  await requireAdmin()
   const { days: raw } = await searchParams
   const days = RANGES.find((r) => String(r) === raw) ?? 30
   const [stats, unread, byStatus] = await Promise.all([
