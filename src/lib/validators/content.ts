@@ -133,8 +133,14 @@ export const settingsInputSchema = z.object({
   linkedinUrl: optionalUrl,
   whatsapp: z
     .string()
-    .trim()
-    .regex(/^(\+?[0-9 ]{6,20})?$/, 'invalidPhone')
+    .nullish()
+    .transform((v) => v ?? '')
+    .pipe(
+      z
+        .string()
+        .trim()
+        .regex(/^(\+?[0-9 ]{6,20})?$/, 'invalidPhone'),
+    )
     .transform((v) => (v ? v.replace(/\s/g, '') : null)),
   cvUrlFr: assetUrl,
   cvUrlEn: assetUrl,
