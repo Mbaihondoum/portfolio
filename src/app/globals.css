@@ -12,7 +12,7 @@
   --border-strong: #2e2e36;
   --foreground: #ffffff;
   --muted: #a1a1aa;
-  --subtle: #71717a;
+  --subtle: #8a8a93;
   --accent: #38bdf8;
   --accent-strong: #7dd3fc;
   --accent-foreground: #0a0a0b;
@@ -40,7 +40,7 @@
   --border-strong: #d4d4d8;
   --foreground: #0a0a0b;
   --muted: #52525b;
-  --subtle: #71717a;
+  --subtle: #66666f;
   --accent: #0369a1;
   --accent-strong: #075985;
   --accent-foreground: #ffffff;
@@ -304,9 +304,41 @@ html.lenis body {
 .intro-seen .intro {
   display: none;
 }
-/* While the intro plays, the hero waits for it. */
-html:not(.intro-seen) .hero {
-  --intro-offset: 1150ms;
+/* ── Hero entrance: pure CSS (independent of hydration, LCP-friendly) ─────
+   During the intro the hero text is painted normally under the overlay (so
+   LCP is not delayed) and the entrance starts as the overlay lifts. */
+.hero-anim {
+  animation: hero-rise var(--dur-slow) var(--ease-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+.hero-split .split-word > span {
+  animation: split-up var(--dur-slow) var(--ease-expo) both;
+  animation-delay: calc(var(--d, 0ms) + var(--i, 0) * 70ms);
+}
+html:not(.intro-seen) .hero-anim {
+  animation-name: hero-slide;
+}
+html:not(.intro-seen) .hero-anim,
+html:not(.intro-seen) .hero-split .split-word > span {
+  animation-fill-mode: none;
+  animation-delay: calc(1100ms + var(--d, 0ms) * 0.3 + var(--i, 0) * 40ms);
+}
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+}
+/* Transform only: text stays painted at full opacity (LCP). */
+@keyframes hero-slide {
+  from {
+    transform: translate3d(0, 24px, 0);
+  }
+}
+@keyframes split-up {
+  from {
+    transform: translate3d(0, 110%, 0);
+  }
 }
 
 @keyframes draw {
@@ -361,11 +393,8 @@ html:not(.intro-seen) .hero {
 /* ── Gallery wipe ─────────────────────────────────────────────────────── */
 .gallery-reveal {
   clip-path: inset(0 0 0 0 round 16px);
-  transition:
-    clip-path 1100ms var(--ease-expo),
-    opacity 700ms var(--ease-out);
+  transition: clip-path 1100ms var(--ease-expo);
 }
 .js-reveal .gallery-reveal:not([data-revealed]) {
   clip-path: inset(12% 6% 12% 6% round 16px);
-  opacity: 0.4;
 }

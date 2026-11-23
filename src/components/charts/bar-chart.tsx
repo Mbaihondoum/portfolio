@@ -121,7 +121,7 @@ export function BarChart({
                   height={geo.base - PAD.top}
                   fill="transparent"
                   tabIndex={0}
-                  role="presentation"
+                  role="img"
                   aria-label={`${labels[i]}: ${format(v)}`}
                   onPointerEnter={() => setActive(i)}
                   onPointerLeave={() => setActive(null)}

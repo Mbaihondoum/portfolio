@@ -44,7 +44,7 @@ export const securityHeaders = [
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
-  partialPrefetching: true,
+  partialPrefetching: false,
   output: process.env.NEXT_OUTPUT === 'standalone' ? 'standalone' : undefined,
   poweredByHeader: false,
   reactStrictMode: true,

@@ -6,11 +6,12 @@ export const inter = Inter({
   display: 'swap',
 })
 
+// Static weights only (the full variable font with opsz/wdth axes is ~130 KB).
 export const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
   variable: '--font-bricolage',
   display: 'swap',
-  axes: ['opsz', 'wdth'],
+  weight: ['600', '700'],
 })
 
 export const jetbrains = JetBrains_Mono({

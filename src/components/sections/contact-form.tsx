@@ -5,7 +5,7 @@ import Script from 'next/script'
 import { useRef, useState, type FormEvent } from 'react'
 import { cn } from '@/lib/cn'
 import type { Locale } from '@/lib/types'
-import { contactSchema, type ContactField } from '@/lib/validators/contact'
+import type { ContactField } from '@/lib/validators/contact'
 import { bezier } from '@/motion.config'
 import type { Dictionary } from '@/i18n/dictionaries/fr'
 import { Magnetic } from '@/components/motion/magnetic'
@@ -90,6 +90,8 @@ export function ContactForm({ locale, labels }: { locale: Locale; labels: Labels
       startedAt: startedAt.current || Date.now() - 60_000,
       turnstileToken: data['cf-turnstile-response'],
     }
+    // Zod is loaded on demand so it never weighs on the initial page load.
+    const { contactSchema } = await import('@/lib/validators/contact')
     const parsed = contactSchema.safeParse(payload)
     if (!parsed.success) {
       const fieldErrors: Partial<Record<ContactField, string>> = {}

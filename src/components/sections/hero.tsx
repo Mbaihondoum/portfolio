@@ -5,8 +5,7 @@ import type { Locale } from '@/lib/types'
 import { buttonClass } from '@/components/ui/button'
 import { GitHubIcon, LinkedInIcon, ArrowIcon } from '@/components/ui/icons'
 import { Magnetic } from '@/components/motion/magnetic'
-import { Reveal } from '@/components/motion/reveal'
-import { SplitText } from '@/components/motion/split-text'
+import type { CSSProperties } from 'react'
 import { HeroBackground } from './hero-background'
 import { RotatingRoles } from './rotating-roles'
 
@@ -26,7 +25,7 @@ export function Hero({
     >
       <HeroBackground />
       <div className="container-page">
-        <Reveal delay={0} className="mb-6 flex flex-wrap items-center gap-3">
+        <div className="hero-anim mb-6 flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-2 rounded-full border border-border-strong bg-surface/60 px-3 py-1 font-mono text-xs text-muted backdrop-blur">
             <span className="relative flex size-2">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:animate-none" />
@@ -34,13 +33,21 @@ export function Hero({
             </span>
             {settings.availability}
           </span>
-        </Reveal>
+        </div>
         <p className="mb-4 font-mono text-sm text-muted">{settings.fullName}</p>
         <h1
           id="hero-title"
           className="max-w-5xl text-[clamp(2.6rem,8vw,6.5rem)] leading-[0.98] font-semibold tracking-tight"
         >
-          <SplitText as="span" text={settings.headline} className="block" />
+          <span className="hero-split block">
+            <span className="sr-only">{settings.headline}</span>
+            {settings.headline.split(/\s+/).map((word, i, all) => (
+              <span key={i} aria-hidden className="split-word">
+                <span style={{ '--i': i } as CSSProperties}>{word}</span>
+                {i < all.length - 1 ? '\u00a0' : null}
+              </span>
+            ))}
+          </span>
         </h1>
         <p className="mt-6 font-mono text-sm text-muted sm:text-base">
           <span aria-hidden className="text-accent">
@@ -48,10 +55,16 @@ export function Hero({
           </span>
           <RotatingRoles roles={t.hero.roles} />
         </p>
-        <Reveal delay={350}>
-          <p className="mt-6 max-w-2xl text-lg text-muted sm:text-xl">{settings.tagline}</p>
-        </Reveal>
-        <Reveal delay={500} className="mt-10 flex flex-wrap items-center gap-3">
+        <p
+          className="hero-anim mt-6 max-w-2xl text-lg text-muted sm:text-xl"
+          style={{ '--d': '350ms' } as CSSProperties}
+        >
+          {settings.tagline}
+        </p>
+        <div
+          className="hero-anim mt-10 flex flex-wrap items-center gap-3"
+          style={{ '--d': '500ms' } as CSSProperties}
+        >
           <Magnetic>
             <Link href={`/${locale}#projects`} className={buttonClass('primary', 'lg')} data-cursor>
               {t.hero.ctaProjects}
@@ -91,7 +104,7 @@ export function Hero({
               </a>
             )}
           </div>
-        </Reveal>
+        </div>
       </div>
       <Link
         href={`/${locale}#about`}

@@ -139,10 +139,10 @@ export function SiteHeader({ locale, initials, items, labels }: Props) {
               href={otherHref}
               hrefLang={other}
               lang={other}
-              aria-label={labels.switchLanguage}
               className="grid h-9 place-items-center rounded-full px-3 font-mono text-xs tracking-wider text-muted uppercase transition-colors hover:bg-surface-2 hover:text-foreground"
             >
               {other}
+              <span className="sr-only"> — {labels.switchLanguage}</span>
             </Link>
             <ThemeToggle label={labels.toggleTheme} />
             <Link

@@ -21,7 +21,8 @@ export function SplitText({
 }) {
   const words = text.split(/\s+/).filter(Boolean)
   return (
-    <Reveal as={as} className={className} split aria-label={text}>
+    <Reveal as={as} className={className} split>
+      <span className="sr-only">{text}</span>
       {words.map((word, i) => (
         <span key={i} aria-hidden className="split-word">
           <span
