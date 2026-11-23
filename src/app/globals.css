@@ -166,8 +166,14 @@ html.lenis body {
     opacity var(--dur-slow) var(--ease-out) var(--reveal-delay, 0ms),
     transform var(--dur-slow) var(--ease-expo) var(--reveal-delay, 0ms);
 }
-.js-reveal [data-split] .split-word > span {
+.js-reveal [data-split]:not([data-revealed]) .split-word > span {
   transform: translate3d(0, 110%, 0);
+}
+[data-split] .split-word > span {
+  transition: transform var(--dur-slow) var(--ease-expo);
+  transition-delay: calc(
+    var(--split-base, 0ms) + var(--intro-offset, 0ms) + var(--i, 0) * var(--split-step, 70ms)
+  );
 }
 .split-word {
   display: inline-block;
@@ -266,4 +272,100 @@ html.lenis body {
   ::view-transition-new(*) {
     animation: none !important;
   }
+}
+
+/* ── Intro (CSS-driven, ≤ 1.6 s, once per session) ────────────────────── */
+.intro {
+  animation: intro-out 500ms var(--ease-in-out) 1100ms forwards;
+}
+.intro-letters {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation:
+    intro-draw 1000ms var(--ease-in-out) forwards,
+    intro-fill 400ms var(--ease-out) 750ms forwards;
+}
+@keyframes intro-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes intro-fill {
+  to {
+    fill: var(--accent-soft);
+  }
+}
+@keyframes intro-out {
+  to {
+    clip-path: inset(0 0 100% 0);
+    visibility: hidden;
+  }
+}
+.intro-seen .intro {
+  display: none;
+}
+/* While the intro plays, the hero waits for it. */
+html:not(.intro-seen) .hero {
+  --intro-offset: 1150ms;
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ── Architecture diagram flows ───────────────────────────────────────── */
+.arch-edge {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1200ms var(--ease-in-out) calc(var(--edge-i, 0) * 180ms);
+}
+[data-revealed] .arch-edge,
+.arch-static .arch-edge {
+  stroke-dashoffset: 0;
+}
+.arch-packet {
+  offset-distance: 0%;
+  opacity: 0;
+}
+[data-revealed] .arch-packet {
+  animation: arch-packet 2.4s var(--ease-in-out) calc(1200ms + var(--edge-i, 0) * 300ms) infinite;
+}
+@keyframes arch-packet {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  10%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arch-edge {
+    stroke-dashoffset: 0;
+  }
+  .arch-packet {
+    display: none;
+  }
+}
+
+/* ── Gallery wipe ─────────────────────────────────────────────────────── */
+.gallery-reveal {
+  clip-path: inset(0 0 0 0 round 16px);
+  transition:
+    clip-path 1100ms var(--ease-expo),
+    opacity 700ms var(--ease-out);
+}
+.js-reveal .gallery-reveal:not([data-revealed]) {
+  clip-path: inset(12% 6% 12% 6% round 16px);
+  opacity: 0.4;
 }
