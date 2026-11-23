@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+<defs>
+<pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse">
+<path d="M40 0H0V40" fill="none" stroke="#1F2430" stroke-width="1" opacity=".55"/>
+</pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#0C4A6E" stop-opacity=".55"/>
+<stop offset="1" stop-color="#0B0D12" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#38BDF8" stop-opacity=".35"/>
+<stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+</linearGradient>
+</defs>
+<rect width="1600" height="1000" fill="#0B0D12"/>
+<rect width="1600" height="1000" fill="url(#g)"/>
+<rect width="1600" height="1000" fill="url(#glow)"/>
+<rect x="40" y="40" width="1520" height="920" rx="18" fill="#0B0D12" stroke="#1F2430"/>
+<rect x="40" y="40" width="1520" height="56" rx="18" fill="#12151C"/>
+<circle cx="76" cy="68" r="7" fill="#1F2430"/><circle cx="100" cy="68" r="7" fill="#1F2430"/><circle cx="124" cy="68" r="7" fill="#1F2430"/>
+<rect x="560" y="54" width="480" height="28" rx="14" fill="#0B0D12"/>
+<rect x="40" y="96" width="260" height="864" fill="#12151C"/>
+<rect x="72" y="130" width="40" height="40" rx="10" fill="#38BDF8"/>
+<rect x="72" y="210" width="154.55957552164773" height="14" rx="4" fill="#71717A" fill-opacity="0.5"/><rect x="72" y="262" width="162.78579233343982" height="14" rx="4" fill="#38BDF8" fill-opacity="1"/><rect x="72" y="314" width="120.81174812317441" height="14" rx="4" fill="#71717A" fill-opacity="0.5"/><rect x="72" y="366" width="143.05070619240902" height="14" rx="4" fill="#71717A" fill-opacity="0.5"/><rect x="72" y="418" width="173.2189758183523" height="14" rx="4" fill="#71717A" fill-opacity="0.5"/><rect x="72" y="470" width="151.3265790470534" height="14" rx="4" fill="#71717A" fill-opacity="0.5"/>
+<text x="350" y="160" font-family="sans-serif" font-size="32" font-weight="700" fill="#E4E4E7">Gestion de programmes</text>
+<text x="350" y="196" font-family="sans-serif" font-size="16" fill="#71717A">Bénéficiaires, activités et rapports</text>
+<g transform="translate(1380 136)">
+<rect width="132" height="30" rx="15" fill="#12151C" stroke="#38BDF8" stroke-opacity=".6"/>
+<text x="66" y="20" text-anchor="middle" font-family="monospace" font-size="13" fill="#7DD3FC" letter-spacing="2">EXEMPLE</text>
+</g>
+<g transform="translate(350 230)"><rect width="330" height="130" rx="14" fill="#12151C" stroke="#1F2430"/>
+<text x="22" y="38" font-family="sans-serif" font-size="14" fill="#71717A">Indicateur 1</text>
+<text x="22" y="88" font-family="sans-serif" font-size="36" font-weight="700" fill="#38BDF8">187</text></g><g transform="translate(710 230)"><rect width="330" height="130" rx="14" fill="#12151C" stroke="#1F2430"/>
+<text x="22" y="38" font-family="sans-serif" font-size="14" fill="#71717A">Indicateur 2</text>
+<text x="22" y="88" font-family="sans-serif" font-size="36" font-weight="700" fill="#E4E4E7">650</text></g><g transform="translate(1070 230)"><rect width="330" height="130" rx="14" fill="#12151C" stroke="#1F2430"/>
+<text x="22" y="38" font-family="sans-serif" font-size="14" fill="#71717A">Indicateur 3</text>
+<text x="22" y="88" font-family="sans-serif" font-size="36" font-weight="700" fill="#E4E4E7">963</text></g>
+<g transform="translate(350 400)">
+<g transform="translate(0 0)">
+<rect x="0" y="0" width="1040" height="46" rx="8" fill="#0B0D12"/>
+<circle cx="28" cy="23" r="12" fill="#1F2430"/>
+<rect x="56" y="16" width="140.01033080742243" height="14" rx="4" fill="#E4E4E7" fill-opacity=".75"/>
+<rect x="420" y="16" width="124.69156695748286" height="14" rx="4" fill="#71717A" fill-opacity=".6"/>
+<rect x="880" y="12" width="110" height="22" rx="11" fill="#1F2430" fill-opacity="1"/>
+</g>
+<g transform="translate(0 58)">
+<rect x="0" y="0" width="1040" height="46" rx="8" fill="#12151C"/>
+<circle cx="28" cy="23" r="12" fill="#1F2430"/>
+<rect x="56" y="16" width="243.25275338406337" height="14" rx="4" fill="#E4E4E7" fill-opacity=".75"/>
+<rect x="420" y="16" width="120.85510496089938" height="14" rx="4" fill="#71717A" fill-opacity=".6"/>
+<rect x="880" y="12" width="110" height="22" rx="11" fill="#38BDF8" fill-opacity="1"/>
+</g>
+<g transform="translate(0 116)">
+<rect x="0" y="0" width="1040" height="46" rx="8" fill="#0B0D12"/>
+<circle cx="28" cy="23" r="12" fill="#1F2430"/>
+<rect x="56" y="16" width="196.67125570432808" height="14" rx="4" fill="#E4E4E7" fill-opacity=".75"/>
+<rect x="420" y="16" width="108.16218553491038" height="14" rx="4" fill="#71717A" fill-opacity=".6"/>
+<rect x="880" y="12" width="110" height="22" rx="11" fill="#1F2430" fill-opacity="0.25"/>
+</g>
+<g transform="translate(0 174)">
+<rect x="0" y="0" width="1040" height="46" rx="8" fill="#12151C"/>
+<circle cx="28" cy="23" r="12" fill="#1F2430"/>
+<rect x="56" y="16" width="156.8742568683225" height="14" rx="4" fill="#E4E4E7" fill-opacity=".75"/>
+<rect x="420" y="16" width="118.0293215802076" height="14" rx="4" fill="#71717A" fill-opacity=".6"/>
+<rect x="880" y="12" width="110" height="22" rx="11" fill="#38BDF8" fill-opacity="0.25"/>
+</g>
+<g transform="translate(0 232)">
+<rect x="0" y="0" width="1040" height="46" rx="8" fill="#0B0D12"/>
+<circle cx="28" cy="23" r="12" fill="#1F2430"/>
+<rect x="56" y="16" width="185.91718698195982" height="14" rx="4" fill="#E4E4E7" fill-opacity=".75"/>
+<rect x="420" y="16" width="88.46800483226218" height="14" rx="4" fill="#71717A" fill-opacity=".6"/>
+<rect x="880" y="12" width="110" height="22" rx="11" fill="#1F2430" fill-opacity="0.25"/>
+</g>
+<g transform="translate(0 290)">
+<rect x="0" y="0" width="1040" height="46" rx="8" fill="#12151C"/>
+<circle cx="28" cy="23" r="12" fill="#1F2430"/>
+<rect x="56" y="16" width="211.0814862843051" height="14" rx="4" fill="#E4E4E7" fill-opacity=".75"/>
+<rect x="420" y="16" width="135.44998359654562" height="14" rx="4" fill="#71717A" fill-opacity=".6"/>
+<rect x="880" y="12" width="110" height="22" rx="11" fill="#1F2430" fill-opacity="1"/>
+</g>
+<g transform="translate(0 348)">
+<rect x="0" y="0" width="1040" height="46" rx="8" fill="#0B0D12"/>
+<circle cx="28" cy="23" r="12" fill="#1F2430"/>
+<rect x="56" y="16" width="176.94029547131635" height="14" rx="4" fill="#E4E4E7" fill-opacity=".75"/>
+<rect x="420" y="16" width="159.6216553447869" height="14" rx="4" fill="#71717A" fill-opacity=".6"/>
+<rect x="880" y="12" width="110" height="22" rx="11" fill="#1F2430" fill-opacity="1"/>
+</g></g>
+<rect x="1430" y="400" width="100" height="40" rx="10" fill="#38BDF8"/>
+</svg>

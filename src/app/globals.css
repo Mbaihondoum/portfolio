@@ -1,0 +1,269 @@
+@import 'tailwindcss';
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Design tokens — dark by default, light theme via [data-theme='light'].
+   Palette: deep black, white, light blue accent (used sparingly).
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  --background: #0a0a0b;
+  --surface: #111114;
+  --surface-2: #16161a;
+  --border: #1f1f24;
+  --border-strong: #2e2e36;
+  --foreground: #ffffff;
+  --muted: #a1a1aa;
+  --subtle: #71717a;
+  --accent: #38bdf8;
+  --accent-strong: #7dd3fc;
+  --accent-foreground: #0a0a0b;
+  --accent-soft: rgb(56 189 248 / 0.12);
+  --accent-glow: rgb(56 189 248 / 0.35);
+  --danger: #f87171;
+  --success: #4ade80;
+  --grid-line: rgb(255 255 255 / 0.035);
+  color-scheme: dark;
+
+  /* Motion tokens (mirrored in src/motion.config.ts) */
+  --dur-fast: 200ms;
+  --dur-base: 500ms;
+  --dur-slow: 900ms;
+  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1); /* power3.out */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1); /* expo.out */
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1); /* power2.inOut */
+}
+
+[data-theme='light'] {
+  --background: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f4f4f5;
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --foreground: #0a0a0b;
+  --muted: #52525b;
+  --subtle: #71717a;
+  --accent: #0369a1;
+  --accent-strong: #075985;
+  --accent-foreground: #ffffff;
+  --accent-soft: rgb(3 105 161 / 0.08);
+  --accent-glow: rgb(3 105 161 / 0.25);
+  --danger: #b91c1c;
+  --success: #15803d;
+  --grid-line: rgb(0 0 0 / 0.04);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  --ease-out-power: var(--ease-out);
+  --ease-out-expo: var(--ease-expo);
+
+  --breakpoint-xs: 22.5rem;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* ── Lenis smooth scroll ──────────────────────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* ── Utilities ────────────────────────────────────────────────────────── */
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 2.5rem;
+  }
+}
+
+@utility bg-blueprint {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+@utility text-gradient {
+  background: linear-gradient(180deg, var(--foreground) 30%, var(--muted));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Reveal system (progressive enhancement) ──────────────────────────────
+   Content is visible by default. The inline head script adds `.js-reveal`
+   only when JS runs and reduced motion is off; it is removed after 3 s if
+   the motion layer never initialised, so content can never stay hidden. */
+.js-reveal [data-reveal]:not([data-revealed]) {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-y, 24px), 0);
+}
+[data-reveal] {
+  transition:
+    opacity var(--dur-slow) var(--ease-out) var(--reveal-delay, 0ms),
+    transform var(--dur-slow) var(--ease-expo) var(--reveal-delay, 0ms);
+}
+.js-reveal [data-split] .split-word > span {
+  transform: translate3d(0, 110%, 0);
+}
+.split-word {
+  display: inline-block;
+  overflow: clip;
+  overflow-clip-margin: 0.12em;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.split-word > span {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* ── View transitions (page + shared element) ─────────────────────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0s;
+}
+::view-transition-old(.page) {
+  animation: var(--dur-fast) var(--ease-in-out) both vt-fade-out;
+}
+::view-transition-new(.page) {
+  animation:
+    var(--dur-base) var(--ease-out) 120ms both vt-fade-in,
+    var(--dur-base) var(--ease-expo) 120ms both vt-mask-in;
+}
+::view-transition-group(.morph) {
+  animation-duration: 550ms;
+  animation-timing-function: var(--ease-expo);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: vt-via-blur;
+}
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes vt-mask-in {
+  from {
+    clip-path: inset(0 0 8% 0);
+    transform: translateY(12px);
+  }
+}
+@keyframes vt-via-blur {
+  40% {
+    filter: blur(2px);
+  }
+}
+
+/* ── Marquee ──────────────────────────────────────────────────────────── */
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee-track {
+  animation: marquee 40s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(220%);
+  }
+}
+
+/* ── Reduced motion: keep content, drop movement ──────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track {
+    animation: none;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+<defs>
+<pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse">
+<path d="M40 0H0V40" fill="none" stroke="#1F2430" stroke-width="1" opacity=".55"/>
+</pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#0C4A6E" stop-opacity=".55"/>
+<stop offset="1" stop-color="#0B0D12" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#38BDF8" stop-opacity=".35"/>
+<stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+</linearGradient>
+</defs>
+<rect width="1600" height="1000" fill="#0B0D12"/>
+<rect width="1600" height="1000" fill="url(#g)"/>
+<rect width="1600" height="1000" fill="url(#glow)"/>
+<text x="60" y="80" font-family="sans-serif" font-size="30" font-weight="700" fill="#E4E4E7">Suivi des programmes</text>
+<text x="60" y="112" font-family="monospace" font-size="14" fill="#71717A">Données fictives · Fictional data</text>
+<g transform="translate(1408 58)">
+<rect width="132" height="30" rx="15" fill="#12151C" stroke="#38BDF8" stroke-opacity=".6"/>
+<text x="66" y="20" text-anchor="middle" font-family="monospace" font-size="13" fill="#7DD3FC" letter-spacing="2">EXEMPLE</text>
+</g>
+<g transform="translate(60 160)"><rect width="250" height="120" rx="14" fill="#12151C" stroke="#1F2430"/>
+<text x="20" y="34" font-family="sans-serif" font-size="13" fill="#71717A">Total</text>
+<text x="20" y="76" font-family="sans-serif" font-size="32" font-weight="700" fill="#E4E4E7">13364</text>
+<path d="M140.0 90.0 L148.2 86.9 L156.4 82.7 L164.5 77.2 L172.7 72.1 L180.9 67.7 L189.1 65.5 L197.3 61.3 L205.5 57.1 L213.6 59.2 L221.8 53.5 L230.0 50.0" fill="none" stroke="#38BDF8" stroke-width="2"/></g>
+<g transform="translate(330 160)"><rect width="250" height="120" rx="14" fill="#12151C" stroke="#1F2430"/>
+<text x="20" y="34" font-family="sans-serif" font-size="13" fill="#71717A">Croissance</text>
+<text x="20" y="76" font-family="sans-serif" font-size="32" font-weight="700" fill="#E4E4E7">+9.3%</text>
+<path d="M140.0 90.0 L148.2 71.5 L156.4 63.6 L164.5 61.9 L172.7 58.7 L180.9 71.4 L189.1 60.2 L197.3 55.2 L205.5 50.0 L213.6 61.8 L221.8 62.2 L230.0 66.6" fill="none" stroke="#38BDF8" stroke-width="2"/></g>
+<g transform="translate(600 160)"><rect width="250" height="120" rx="14" fill="#12151C" stroke="#1F2430"/>
+<text x="20" y="34" font-family="sans-serif" font-size="13" fill="#71717A">Taux</text>
+<text x="20" y="76" font-family="sans-serif" font-size="32" font-weight="700" fill="#E4E4E7">70%</text>
+<path d="M140.0 90.0 L148.2 77.7 L156.4 78.6 L164.5 68.2 L172.7 55.5 L180.9 57.5 L189.1 50.8 L197.3 54.9 L205.5 58.8 L213.6 66.3 L221.8 58.5 L230.0 50.0" fill="none" stroke="#38BDF8" stroke-width="2"/></g>
+<g transform="translate(870 160)"><rect width="250" height="120" rx="14" fill="#12151C" stroke="#1F2430"/>
+<text x="20" y="34" font-family="sans-serif" font-size="13" fill="#71717A">Moyenne</text>
+<text x="20" y="76" font-family="sans-serif" font-size="32" font-weight="700" fill="#E4E4E7">193</text>
+<path d="M140.0 78.9 L148.2 83.9 L156.4 89.2 L164.5 90.0 L172.7 87.4 L180.9 85.1 L189.1 78.3 L197.3 69.5 L205.5 60.5 L213.6 50.0 L221.8 54.5 L230.0 55.7" fill="none" stroke="#38BDF8" stroke-width="2"/></g>
+<g transform="translate(1140 160)"><rect width="400" height="290" rx="14" fill="#12151C" stroke="#1F2430"/>
+<text x="24" y="40" font-family="sans-serif" font-size="15" fill="#E4E4E7">Répartition</text>
+<circle cx="200" cy="165" r="80" fill="none" stroke="#1F2430" stroke-width="30"/>
+<circle cx="200" cy="165" r="80" fill="none" stroke="#38BDF8" stroke-width="30" stroke-dasharray="322.02057349426696 502" transform="rotate(-90 200 165)"/>
+<circle cx="200" cy="165" r="80" fill="none" stroke="#7DD3FC" stroke-opacity=".5" stroke-width="30" stroke-dasharray="100.4 502" stroke-dashoffset="-341.36" transform="rotate(-90 200 165)"/></g>
+<g transform="translate(60 310)"><rect width="1050" height="450" rx="14" fill="#12151C" stroke="#1F2430"/><text x="24" y="40" font-family="sans-serif" font-size="15" fill="#E4E4E7">Évolution mensuelle</text></g>
+<path d="M60.0 670.2 L97.4 620.4 L134.8 698.9 L172.2 667.8 L209.6 664.5 L247.0 602.4 L284.3 556.1 L321.7 614.7 L359.1 672.0 L396.5 713.1 L433.9 657.4 L471.3 694.3 L508.7 545.8 L546.1 537.1 L583.5 471.4 L620.9 477.3 L658.3 559.2 L695.7 631.4 L733.0 575.9 L770.4 470.0 L807.8 562.9 L845.2 597.7 L882.6 676.1 L920.0 730.0 L920 730 L60 730 Z" transform="translate(60 0)" fill="url(#area)"/>
+<path d="M60.0 670.2 L97.4 620.4 L134.8 698.9 L172.2 667.8 L209.6 664.5 L247.0 602.4 L284.3 556.1 L321.7 614.7 L359.1 672.0 L396.5 713.1 L433.9 657.4 L471.3 694.3 L508.7 545.8 L546.1 537.1 L583.5 471.4 L620.9 477.3 L658.3 559.2 L695.7 631.4 L733.0 575.9 L770.4 470.0 L807.8 562.9 L845.2 597.7 L882.6 676.1 L920.0 730.0" transform="translate(60 0)" fill="none" stroke="#38BDF8" stroke-width="3"/>
+<path d="M60.0 725.9 L97.4 715.7 L134.8 717.7 L172.2 688.9 L209.6 711.1 L247.0 730.0 L284.3 685.7 L321.7 641.1 L359.1 595.7 L396.5 563.1 L433.9 571.1 L471.3 529.0 L508.7 493.8 L546.1 470.0 L583.5 501.4 L620.9 528.6 L658.3 496.5 L695.7 516.7 L733.0 524.9 L770.4 534.3 L807.8 486.8 L845.2 515.3 L882.6 531.6 L920.0 505.9" transform="translate(60 0)" fill="none" stroke="#71717A" stroke-width="2" stroke-dasharray="6 6"/>
+<g transform="translate(1140 480)"><rect width="400" height="280" rx="14" fill="#12151C" stroke="#1F2430"/><text x="24" y="40" font-family="sans-serif" font-size="15" fill="#E4E4E7">Top catégories</text>
+<rect x="24" y="66" width="60.02817492933393" height="18" rx="4" fill="#38BDF8"/><rect x="24" y="106" width="233.5360373153985" height="18" rx="4" fill="#1F2430"/><rect x="24" y="146" width="80.17915990211962" height="18" rx="4" fill="#1F2430"/><rect x="24" y="186" width="211.14047492441745" height="18" rx="4" fill="#1F2430"/><rect x="24" y="226" width="177.96205468380919" height="18" rx="4" fill="#1F2430"/></g>
+<g transform="translate(60 790)"><rect width="1480" height="160" rx="14" fill="#12151C" stroke="#1F2430"/><text x="24" y="40" font-family="sans-serif" font-size="15" fill="#E4E4E7">Par région</text>
+<rect x="40" y="123.49225189443317" width="90" height="16.507748105566833" rx="4" fill="#38BDF8" fill-opacity="0.35"/><rect x="220" y="75.7775897382654" width="90" height="64.2224102617346" rx="4" fill="#38BDF8" fill-opacity="0.43"/><rect x="400" y="117.9507310269171" width="90" height="22.0492689730829" rx="4" fill="#38BDF8" fill-opacity="0.51"/><rect x="580" y="81.93636939578519" width="90" height="58.0636306042148" rx="4" fill="#38BDF8" fill-opacity="0.59"/><rect x="760" y="91.06043496195247" width="90" height="48.93956503804753" rx="4" fill="#38BDF8" fill-opacity="0.6699999999999999"/><rect x="940" y="71.73040553519054" width="90" height="68.26959446480946" rx="4" fill="#38BDF8" fill-opacity="0.75"/><rect x="1120" y="76.92582994765874" width="90" height="63.074170052341266" rx="4" fill="#38BDF8" fill-opacity="0.83"/><rect x="1300" y="111.42393030036423" width="90" height="28.576069699635763" rx="4" fill="#38BDF8" fill-opacity="0.91"/></g>
+</svg>
