@@ -114,6 +114,20 @@ ADMIN_EMAILS=votre-email-github@exemple.com
 
   Pour savoir qui occupe le port : `netstat -ano | findstr :3000` (Windows) ou `lsof -i :3000` (macOS/Linux). Si c'est un ancien lancement du portfolio, `docker ps` le montre et `docker compose down` l'arrête.
 
+- _ETIMEDOUT_ / _fetch failed_ vers `registry.npmjs.org` pendant `docker compose up --build`, alors que `curl -I https://registry.npmjs.org/` fonctionne sur votre machine : le réseau des conteneurs Docker est bloqué (pare-feu, VPN… fréquent sous Linux). Faites construire les images avec le réseau de votre machine en créant, à la racine du projet, un fichier `docker-compose.override.yml` (lu automatiquement, ignoré par git) :
+
+  ```yaml
+  services:
+    migrate:
+      build:
+        network: host
+    app:
+      build:
+        network: host
+  ```
+
+  puis relancez `docker compose up --build`. Seule la construction a besoin d'internet : une fois construits, les conteneurs fonctionnent sans accès extérieur.
+
 - _429 Too Many Requests_ au téléchargement des images Docker : limite temporaire de Docker Hub, réessayez quelques minutes plus tard.
 
 Détails techniques : l'image se construit **sans accès à la base** (pages prérendues avec un contenu provisoire) ; au démarrage, `scripts/docker-start.mjs` lance le serveur puis rafraîchit toutes les pages prérendues avec les vraies données avant la première visite. Image ≈ 340 Mo (sortie `standalone`, utilisateur non root, `HEALTHCHECK` sur `/api/health`). Le service `migrate` utilise l'étage `tools` du Dockerfile (pas de second build Next.js).

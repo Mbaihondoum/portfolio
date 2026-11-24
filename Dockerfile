@@ -3,8 +3,11 @@
 # `tools` (deps + sources, no build) runs migrations/seed in docker compose.
 
 FROM node:22-alpine AS base
-ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH NEXT_TELEMETRY_DISABLED=1
-RUN corepack enable
+ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH NEXT_TELEMETRY_DISABLED=1 COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+# Download pnpm once, at build time: containers built from these stages (e.g.
+# the compose `migrate` service) then never need network access to run pnpm.
+# Keep in sync with "packageManager" in package.json.
+RUN corepack enable && corepack prepare pnpm@10.28.0 --activate
 WORKDIR /app
 
 # ── Dependencies (cached unless the lockfile changes) ────────────────────

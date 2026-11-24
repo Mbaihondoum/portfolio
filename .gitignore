@@ -51,3 +51,6 @@ next-env.d.ts
 
 # local uploads (storage driver "local")
 /uploads/
+
+# machine-specific docker compose tweaks (see README, troubleshooting)
+docker-compose.override.yml
