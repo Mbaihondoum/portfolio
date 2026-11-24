@@ -7,7 +7,9 @@ import { Badge } from '@/components/ui/badge'
 import { Field, Input, Select, Textarea } from '@/components/ui/field'
 import type { Localized } from '@/lib/types'
 import { deleteExperience, reorderExperiences, saveExperience } from '@/server/actions/admin'
-import { ActionButton, moveId } from './action-button'
+import { ActionButton } from './action-button'
+import { DragHandle, LiveRegion, MoveButtons, sortableRowClass } from './sortable-ui'
+import { useSortable } from './use-sortable'
 import { errorMessage } from './errors'
 
 export type ExperienceValues = {
@@ -154,12 +156,18 @@ function ExperienceForm({
 
 export function ExperienceManager({ items }: { items: Item[] }) {
   const [editing, setEditing] = useState<string | null>(null)
-  const ids = items.map((i) => i.id)
+  const sortable = useSortable(items, reorderExperiences, (e) => e.title.fr || e.organization)
   return (
     <div className="flex flex-col gap-3">
-      {items.map((item, i) => (
-        <article key={item.id} className="rounded-2xl border border-border bg-surface p-4">
+      <LiveRegion message={sortable.announcement} />
+      {sortable.ordered.map((item, i) => (
+        <article
+          key={item.id}
+          {...sortable.rowProps(item)}
+          className={`rounded-2xl border border-border bg-surface p-4 ${sortableRowClass}`}
+        >
           <div className="flex flex-wrap items-center gap-3">
+            <DragHandle {...sortable.handleProps(item)} />
             <Badge tone={item.type === 'work' ? 'accent' : 'neutral'}>
               {item.type === 'work' ? 'Expérience' : 'Formation'}
             </Badge>
@@ -169,12 +177,12 @@ export function ExperienceManager({ items }: { items: Item[] }) {
                 {item.organization} · {item.startDate} → {item.endDate || 'en cours'}
               </p>
             </div>
-            <ActionButton label="Monter" action={() => reorderExperiences(moveId(ids, i, -1))}>
-              ↑
-            </ActionButton>
-            <ActionButton label="Descendre" action={() => reorderExperiences(moveId(ids, i, 1))}>
-              ↓
-            </ActionButton>
+            <MoveButtons
+              onMove={(dir) => sortable.move(i, dir)}
+              first={i === 0}
+              last={i === sortable.ordered.length - 1}
+              disabled={sortable.pending}
+            />
             <Button
               size="sm"
               variant="secondary"

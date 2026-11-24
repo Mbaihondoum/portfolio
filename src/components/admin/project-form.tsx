@@ -4,8 +4,10 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Field, Input, Select, Textarea } from '@/components/ui/field'
-import type { Localized } from '@/lib/types'
+import type { ArchitectureDiagram, Localized, ProjectChart } from '@/lib/types'
 import { saveProject } from '@/server/actions/admin'
+import { ArchitectureEditor } from './architecture-editor'
+import { ChartsEditor } from './charts-editor'
 import { errorMessage } from './errors'
 import { uploadFile } from './upload'
 
@@ -33,8 +35,8 @@ export type ProjectFormValues = {
   demoUrl: string | null
   repoUrl: string | null
   powerBiEmbedUrl: string | null
-  architecture: unknown
-  charts: unknown[]
+  architecture: ArchitectureDiagram | null
+  charts: ProjectChart[]
   status: 'draft' | 'published'
   featured: boolean
   isSample: boolean
@@ -67,29 +69,6 @@ export const EMPTY_PROJECT: ProjectFormValues = {
   metrics: [],
   images: [],
 }
-
-const ARCH_EXAMPLE = `{
-  "nodes": [
-    { "id": "web", "label": "Next.js", "layer": "client" },
-    { "id": "api", "label": "API REST", "layer": "api" },
-    { "id": "db", "label": "PostgreSQL", "layer": "data" }
-  ],
-  "edges": [
-    { "from": "web", "to": "api", "label": "HTTPS" },
-    { "from": "api", "to": "db" }
-  ]
-}`
-
-const CHART_EXAMPLE = `[
-  {
-    "id": "revenue",
-    "type": "line",
-    "title": { "fr": "Chiffre d'affaires (k€)", "en": "Revenue (k€)" },
-    "unit": "k€",
-    "labels": ["Jan", "Fév", "Mar"],
-    "values": [42, 51, 63]
-  }
-]`
 
 /** Real pixel size of an image file (keeps the right aspect ratio on the site, no CLS). */
 async function imageSize(file: File): Promise<{ width: number; height: number }> {
@@ -127,12 +106,6 @@ function Section({ title, children, hint }: { title: string; hint?: string; chil
 export function ProjectForm({ id, initial }: { id?: string; initial: ProjectFormValues }) {
   const router = useRouter()
   const [v, setV] = useState(initial)
-  const [archText, setArchText] = useState(
-    initial.architecture ? JSON.stringify(initial.architecture, null, 2) : '',
-  )
-  const [chartsText, setChartsText] = useState(
-    initial.charts.length ? JSON.stringify(initial.charts, null, 2) : '',
-  )
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [status, setStatus] = useState<string | null>(null)
   const [pending, start] = useTransition()
@@ -186,27 +159,9 @@ export function ProjectForm({ id, initial }: { id?: string; initial: ProjectForm
   }
 
   function submit() {
-    const nextErrors: Record<string, string> = {}
-    let architecture: unknown = null
-    let charts: unknown = []
-    try {
-      architecture = archText.trim() ? JSON.parse(archText) : null
-    } catch {
-      nextErrors.architecture = 'JSON invalide'
-    }
-    try {
-      charts = chartsText.trim() ? JSON.parse(chartsText) : []
-    } catch {
-      nextErrors.charts = 'JSON invalide'
-    }
-    if (Object.keys(nextErrors).length) {
-      setErrors(nextErrors)
-      setStatus('Corrigez les champs en rouge.')
-      return
-    }
     start(async () => {
       setStatus(null)
-      const result = await saveProject({ ...v, architecture, charts }, id)
+      const result = await saveProject(v, id)
       if (result.ok) {
         setErrors({})
         setStatus('Enregistré ✓')
@@ -564,43 +519,41 @@ export function ProjectForm({ id, initial }: { id?: string; initial: ProjectForm
       </Section>
 
       <Section
-        title="Architecture & graphiques (avancé)"
-        hint="Optionnel. Couches possibles : client, api, data, infra, external."
+        title="Schéma d’architecture"
+        hint="Optionnel. Décrivez les blocs (front, API, base de données, services externes…) et les flux entre eux."
       >
-        <Field
-          label="Schéma d’architecture (JSON)"
-          htmlFor="arch"
-          error={errors.architecture ?? jsonError('architecture')}
-        >
-          <Textarea
-            id="arch"
-            rows={8}
-            className="font-mono text-xs"
-            placeholder={ARCH_EXAMPLE}
-            value={archText}
-            onChange={(e) => setArchText(e.target.value)}
-          />
-        </Field>
-        <Field
-          label="Graphiques animés (JSON)"
-          htmlFor="charts"
-          error={errors.charts ?? jsonError('charts')}
-        >
-          <Textarea
-            id="charts"
-            rows={8}
-            className="font-mono text-xs"
-            placeholder={CHART_EXAMPLE}
-            value={chartsText}
-            onChange={(e) => setChartsText(e.target.value)}
-          />
-        </Field>
+        <ArchitectureEditor
+          value={v.architecture}
+          onChange={(next) => set('architecture', next)}
+          error={jsonError('architecture')}
+        />
+      </Section>
+
+      <Section
+        title="Graphiques animés"
+        hint="Optionnel, idéal pour les projets data : les courbes se tracent et les barres montent au scroll. Données réelles uniquement."
+      >
+        <ChartsEditor
+          value={v.charts}
+          onChange={(next) => set('charts', next)}
+          error={jsonError('charts')}
+        />
       </Section>
 
       <div className="sticky bottom-4 z-10 flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-surface/90 p-3 backdrop-blur">
         <Button type="submit" disabled={pending}>
           {pending ? 'Enregistrement…' : 'Enregistrer'}
         </Button>
+        {id && (
+          <a
+            href={`/admin/preview/${id}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-muted hover:text-accent"
+          >
+            Aperçu (version enregistrée) ↗
+          </a>
+        )}
         {id && v.status === 'published' && (
           <a
             href={`/fr/projects/${v.slug}`}

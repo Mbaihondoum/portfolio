@@ -157,9 +157,9 @@ Un hook pre-commit (Husky + lint-staged) formate et lint les fichiers modifiés.
 5. **Technologies & liens** : stack séparée par des virgules, lien démo, lien code, et pour un projet data le lien Power BI « Publier sur le web » (`https://app.powerbi.com/…`), affiché en iframe chargée au clic.
 6. **Visuels** : téléversez la couverture (PNG/JPG/WebP/AVIF, 5 Mo max, format conseillé 1600 × 1000) et sa description alternative, puis ajoutez des captures / dashboards / graphiques R à la galerie.
 7. **Résultats chiffrés** : uniquement des chiffres réels (ils s'animent en compteurs).
-8. **Architecture & graphiques** (optionnel) : JSON du schéma (nœuds avec une couche `client`/`api`/`data`/`infra`/`external`, et des liens) et séries de données pour les graphiques animés. Un exemple s'affiche dans chaque champ vide.
-9. **Enregistrer**, vérifiez l'aperçu, passez le statut à **Publié**. Le site public est mis à jour immédiatement (invalidation du cache par tags).
-10. Dans la liste des projets : ↑ ↓ pour l'ordre d'affichage, « Dépublier » pour masquer, et supprimez les projets « Exemple ».
+8. **Schéma d'architecture** (optionnel) : ajoutez des blocs (libellé + couche : client, API & logique, données, infra, externe) et des liens entre eux ; l'aperçu se met à jour en direct. **Graphiques animés** (optionnel, idéal pour les projets data) : type courbe ou barres, titre FR/EN, unité, lignes libellé/valeur, avec aperçu. Un « mode JSON » permet l'import/export.
+9. **Enregistrer**, puis « Aperçu (version enregistrée) » : la page s'affiche exactement comme sur le site, en FR ou EN, même en brouillon. Passez ensuite le statut à **Publié** : le site public est mis à jour immédiatement (invalidation du cache par tags).
+10. Dans la liste des projets, réordonnez par **glisser-déposer** (poignée ⋮⋮) ou avec les boutons ↑ ↓ (clavier) ; le même système existe pour les compétences et le parcours. « Dépublier » masque un projet ; supprimez les projets « Exemple ».
 
 ---
 

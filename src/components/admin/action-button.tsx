@@ -45,11 +45,3 @@ export function ActionButton({
     </Button>
   )
 }
-
-export function moveId(ids: string[], index: number, dir: -1 | 1) {
-  const next = [...ids]
-  const target = index + dir
-  if (target < 0 || target >= next.length) return next
-  ;[next[index], next[target]] = [next[target]!, next[index]!]
-  return next
-}
