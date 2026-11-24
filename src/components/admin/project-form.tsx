@@ -91,6 +91,18 @@ const CHART_EXAMPLE = `[
   }
 ]`
 
+/** Real pixel size of an image file (keeps the right aspect ratio on the site, no CLS). */
+async function imageSize(file: File): Promise<{ width: number; height: number }> {
+  try {
+    const bitmap = await createImageBitmap(file)
+    const size = { width: bitmap.width, height: bitmap.height }
+    bitmap.close()
+    return size
+  } catch {
+    return { width: 1600, height: 1000 }
+  }
+}
+
 function slugify(s: string) {
   return s
     .normalize('NFD')
@@ -160,12 +172,16 @@ export function ProjectForm({ id, initial }: { id?: string; initial: ProjectForm
     </div>
   )
 
-  async function handleUpload(file: File | undefined, onUrl: (url: string) => void, tag: string) {
+  async function handleUpload(
+    file: File | undefined,
+    onUrl: (url: string, size: { width: number; height: number }) => void,
+    tag: string,
+  ) {
     if (!file) return
     setUploading(tag)
-    const res = await uploadFile(file, 'image')
+    const [size, res] = await Promise.all([imageSize(file), uploadFile(file, 'image')])
     setUploading(null)
-    if (res.ok) onUrl(res.url)
+    if (res.ok) onUrl(res.url, size)
     else setStatus(errorMessage(res.error) ?? 'Erreur')
   }
 
@@ -453,17 +469,19 @@ export function ProjectForm({ id, initial }: { id?: string; initial: ProjectForm
               onChange={(e) =>
                 handleUpload(
                   e.target.files?.[0],
-                  (url) =>
-                    set('images', [
-                      ...v.images,
-                      {
-                        url,
-                        alt: empty,
-                        kind: v.category === 'data' ? 'dashboard' : 'screenshot',
-                        width: 1600,
-                        height: 1000,
-                      },
-                    ]),
+                  (url, size) =>
+                    setV((prev) => ({
+                      ...prev,
+                      images: [
+                        ...prev.images,
+                        {
+                          url,
+                          alt: empty,
+                          kind: prev.category === 'data' ? 'dashboard' : 'screenshot',
+                          ...size,
+                        },
+                      ],
+                    })),
                   'gallery',
                 )
               }

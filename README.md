@@ -178,7 +178,7 @@ DATABASE_URL="postgres://…:6543/postgres" pnpm db:seed
 
 3. **GitHub OAuth** : GitHub → Settings → Developer settings → OAuth Apps → _New_. Homepage `https://votre-domaine`, callback `https://votre-domaine/api/auth/callback/github`.
 4. **Resend** : ajoutez et vérifiez votre domaine, créez une clé API.
-5. **Vercel** : importez le dépôt GitHub, renseignez toutes les variables du §2 (avec `STORAGE_DRIVER=supabase`), déployez.
+5. **Vercel** : importez le dépôt GitHub, renseignez toutes les variables du §2 (avec `STORAGE_DRIVER=supabase`), déployez. `vercel.json` utilise `scripts/vercel-build.sh` : les migrations en attente sont appliquées automatiquement **uniquement** pour les déploiements de production (`VERCEL_ENV=production`), jamais pour les previews.
 6. Ajoutez votre domaine dans Vercel, mettez à jour `NEXT_PUBLIC_SITE_URL` et l'URL de callback GitHub, redéployez.
 7. Suivez la [checklist de mise en ligne](docs/checklist-mise-en-ligne.md).
 

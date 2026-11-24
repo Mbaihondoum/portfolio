@@ -35,6 +35,25 @@ test.describe('Admin access', () => {
       await expect(page.getByText(name).first()).toBeVisible()
     })
 
+    test('opens the project editor without CSP violations', async ({ page }) => {
+      const violations: string[] = []
+      page.on('console', (m) => {
+        if (m.type() === 'error' && /Content Security Policy/i.test(m.text()))
+          violations.push(m.text())
+      })
+      await page.goto('/admin/projects')
+      await page
+        .getByRole('link', { name: /Dashboard Power BI/ })
+        .first()
+        .click()
+      await expect(page).toHaveURL(/\/admin\/projects\/[0-9a-f-]{36}$/)
+      await expect(page.getByLabel('Slug (URL)')).toHaveValue('dashboard-power-bi-ventes')
+      // Hydrated: client interactions work (would fail if scripts were blocked).
+      await page.getByRole('button', { name: 'Générer' }).click()
+      await expect(page.getByLabel('Slug (URL)')).toHaveValue('dashboard-power-bi-des-ventes')
+      expect(violations).toEqual([])
+    })
+
     test('unpublishes and republishes a project', async ({ page }) => {
       await page.goto('/admin/projects')
       const row = page.getByRole('listitem').filter({ hasText: 'API de commandes' })

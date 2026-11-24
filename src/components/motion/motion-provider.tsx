@@ -23,10 +23,32 @@ export function loadGsap() {
 }
 
 /**
+ * Resolves on the first scroll / pointer / key interaction (or after a long
+ * idle period). Scroll-driven scenes all live below the fold, so GSAP is not
+ * needed before the user starts moving: keeps the initial main thread free.
+ */
+let activation: Promise<void> | null = null
+export function whenUserActive(): Promise<void> {
+  if (typeof window === 'undefined') return new Promise(() => {})
+  activation ??= new Promise<void>((resolve) => {
+    const events = ['scroll', 'wheel', 'pointerdown', 'keydown', 'touchstart'] as const
+    const done = () => {
+      events.forEach((e) => window.removeEventListener(e, done))
+      resolve()
+    }
+    events.forEach((e) => window.addEventListener(e, done, { once: true, passive: true }))
+    // Already scrolled (e.g. reload in the middle of the page) or anchor link.
+    if (window.scrollY > 0 || location.hash) done()
+    else setTimeout(done, 8000)
+  })
+  return activation
+}
+
+/**
  * Root of the motion system:
  *  - marks the document as motion-ready (see the reveal safety net in globals.css);
- *  - starts Lenis smooth scrolling (not with reduced motion) and keeps it in
- *    sync with GSAP ScrollTrigger once GSAP is loaded;
+ *  - starts Lenis smooth scrolling on desktop (full tier: touch scrolling is
+ *    already native-smooth) and keeps it in sync with GSAP ScrollTrigger;
  *  - exposes the motion tier so heavy effects can opt out on small devices.
  */
 export function MotionProvider({ children }: { children: ReactNode }) {
@@ -38,7 +60,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (tier === 'none') return
+    if (tier !== 'full') return
     let instance: Lenis | null = null
     let cancelled = false
     let rafId = 0
@@ -53,15 +75,17 @@ export function MotionProvider({ children }: { children: ReactNode }) {
         rafId = requestAnimationFrame(raf)
       }
       rafId = requestAnimationFrame(raf)
-      loadGsap().then(({ gsap, ScrollTrigger }) => {
-        if (cancelled || !instance) return
-        cancelAnimationFrame(rafId)
-        const tick = (t: number) => instance?.raf(t * 1000)
-        instance.on('scroll', ScrollTrigger.update)
-        gsap.ticker.add(tick)
-        gsap.ticker.lagSmoothing(0)
-        detachGsap = () => gsap.ticker.remove(tick)
-      })
+      whenUserActive()
+        .then(loadGsap)
+        .then(({ gsap, ScrollTrigger }) => {
+          if (cancelled || !instance) return
+          cancelAnimationFrame(rafId)
+          const tick = (t: number) => instance?.raf(t * 1000)
+          instance.on('scroll', ScrollTrigger.update)
+          gsap.ticker.add(tick)
+          gsap.ticker.lagSmoothing(0)
+          detachGsap = () => gsap.ticker.remove(tick)
+        })
     })
     return () => {
       cancelled = true

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, type ReactNode } from 'react'
-import { loadGsap, useMotion } from './motion-provider'
+import { loadGsap, useMotion, whenUserActive } from './motion-provider'
 
 /**
  * Generic GSAP ScrollTrigger hook-up. `setup` receives gsap + the root element
@@ -22,11 +22,13 @@ export function useScrollScene(
     if (tier === 'none' || !ref.current) return
     let ctx: { revert: () => void } | undefined
     let cancelled = false
-    loadGsap().then(({ gsap }) => {
-      if (cancelled || !ref.current) return
-      const root = ref.current
-      ctx = gsap.context(() => setup({ gsap, root, tier }), root)
-    })
+    whenUserActive()
+      .then(loadGsap)
+      .then(({ gsap }) => {
+        if (cancelled || !ref.current) return
+        const root = ref.current
+        ctx = gsap.context(() => setup({ gsap, root, tier }), root)
+      })
     return () => {
       cancelled = true
       ctx?.revert()

@@ -17,8 +17,18 @@ export function HeroBackground() {
     if (!canvas || tier === 'none') return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-    const accent =
+    const readAccent = () =>
       getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#38bdf8'
+    let accent = readAccent()
+    // Follow the light/dark toggle (it only changes <html data-theme>).
+    const themeObserver = new MutationObserver(() => {
+      accent = readAccent()
+      if (tier !== 'full') draw()
+    })
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    })
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     let w = 0
     let h = 0
@@ -104,6 +114,7 @@ export function HeroBackground() {
       running = false
       cancelAnimationFrame(raf)
       io.disconnect()
+      themeObserver.disconnect()
       window.removeEventListener('resize', resize)
       window.removeEventListener('pointermove', onMove)
     }
