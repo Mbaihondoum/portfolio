@@ -107,7 +107,13 @@ ADMIN_EMAILS=votre-email-github@exemple.com
 **Dépannage**
 
 - _Cannot connect to the Docker daemon_ : Docker Desktop n'est pas démarré.
-- _port is already allocated_ (3000 ou 5432) : un autre programme utilise ce port (souvent un PostgreSQL déjà installé pour 5432). Fermez-le, ou changez le port de gauche dans `docker-compose.yml` (ex. `'3001:3000'`, puis ouvrez <http://localhost:3001>).
+- _port is already allocated_ / _address already in use_ (3000 ou 5432) : un autre programme utilise ce port (souvent un autre projet sur 3000, ou un PostgreSQL déjà installé sur 5432). Sans toucher au code :
+  1. arrêtez la tentative en cours : `Ctrl + C` puis `docker compose down` ;
+  2. à la racine du projet, créez un fichier nommé **`.env`** contenant `APP_PORT=3001` (ajoutez la ligne `DB_PORT=5433` si c'est 5432 qui est pris) ;
+  3. relancez `docker compose up --build` et ouvrez <http://localhost:3001>.
+
+  Pour savoir qui occupe le port : `netstat -ano | findstr :3000` (Windows) ou `lsof -i :3000` (macOS/Linux). Si c'est un ancien lancement du portfolio, `docker ps` le montre et `docker compose down` l'arrête.
+
 - _429 Too Many Requests_ au téléchargement des images Docker : limite temporaire de Docker Hub, réessayez quelques minutes plus tard.
 
 Détails techniques : l'image se construit **sans accès à la base** (pages prérendues avec un contenu provisoire) ; au démarrage, `scripts/docker-start.mjs` lance le serveur puis rafraîchit toutes les pages prérendues avec les vraies données avant la première visite. Image ≈ 340 Mo (sortie `standalone`, utilisateur non root, `HEALTHCHECK` sur `/api/health`). Le service `migrate` utilise l'étage `tools` du Dockerfile (pas de second build Next.js).
