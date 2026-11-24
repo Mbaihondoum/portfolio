@@ -65,15 +65,52 @@ pnpm dev
 
 Le site est sur <http://localhost:3000> (redirige vers `/fr` ou `/en` selon le navigateur) et l'admin sur <http://localhost:3000/admin>.
 
-### Tout en Docker
+### Voir le portfolio en local (Docker, rien d'autre à installer)
+
+1. Installez et **démarrez Docker Desktop** ([Windows / macOS](https://www.docker.com/products/docker-desktop/)).
+2. Récupérez le code (ou « Code → Download ZIP » sur GitHub, puis dézippez) :
+
+```bash
+git clone https://github.com/Mbaihondoum/portfolio.git
+```
+
+```bash
+cd portfolio
+```
+
+3. Lancez tout (base de données, migrations, données d'exemple, site) — premier lancement : quelques minutes :
 
 ```bash
 docker compose up --build
 ```
 
-Démarre PostgreSQL, applique migrations + seed (service `migrate`), puis lance le build de production sur <http://localhost:3000>. Les fichiers téléversés sont conservés dans le volume `uploads`.
+4. Ouvrez **<http://localhost:3000>** quand le terminal affiche `[warmup] … refreshed with live data`.
 
-L'image se construit **sans accès à la base** : les lectures en cache retombent sur un contenu vide pendant le build puis se rafraîchissent au premier accès (voir `src/server/services/content.ts`). Image finale ≈ 340 Mo (sortie `standalone`, utilisateur non root, `HEALTHCHECK` sur `/api/health`).
+- **Arrêter** : `Ctrl + C` dans le terminal (ou `docker compose down`).
+- **Relancer** plus tard : `docker compose up` (sans `--build` si le code n'a pas changé).
+- **Tout remettre à zéro** (base + fichiers téléversés) : `docker compose down -v`.
+
+**Activer l'admin en local (optionnel)** — sans configuration, `/admin` affiche « Admin non configuré » et le site public fonctionne normalement.
+
+1. GitHub → Settings → Developer settings → OAuth Apps → _New OAuth App_ : Homepage `http://localhost:3000`, callback `http://localhost:3000/api/auth/callback/github`. Notez le _Client ID_ et générez un _Client secret_.
+2. À la racine du projet, créez un fichier `.env.local` (il n'est jamais versionné) :
+
+```bash
+AUTH_SECRET=une-longue-chaine-aleatoire-de-32-caracteres-minimum
+AUTH_GITHUB_ID=votre-client-id
+AUTH_GITHUB_SECRET=votre-client-secret
+ADMIN_EMAILS=votre-email-github@exemple.com
+```
+
+3. `docker compose up` puis <http://localhost:3000/admin>.
+
+**Dépannage**
+
+- _Cannot connect to the Docker daemon_ : Docker Desktop n'est pas démarré.
+- _port is already allocated_ (3000 ou 5432) : un autre programme utilise ce port (souvent un PostgreSQL déjà installé pour 5432). Fermez-le, ou changez le port de gauche dans `docker-compose.yml` (ex. `'3001:3000'`, puis ouvrez <http://localhost:3001>).
+- _429 Too Many Requests_ au téléchargement des images Docker : limite temporaire de Docker Hub, réessayez quelques minutes plus tard.
+
+Détails techniques : l'image se construit **sans accès à la base** (pages prérendues avec un contenu provisoire) ; au démarrage, `scripts/docker-start.mjs` lance le serveur puis rafraîchit toutes les pages prérendues avec les vraies données avant la première visite. Image ≈ 340 Mo (sortie `standalone`, utilisateur non root, `HEALTHCHECK` sur `/api/health`). Le service `migrate` utilise l'étage `tools` du Dockerfile (pas de second build Next.js).
 
 ---
 

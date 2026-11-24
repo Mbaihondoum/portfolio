@@ -82,6 +82,7 @@ const fr = {
     stack: 'Technologies',
     architecture: 'Architecture',
     results: 'Résultats',
+    charts: 'Les chiffres en graphiques',
     gallery: 'Captures',
     dataGallery: 'Dashboards & graphiques',
     details: 'Détails',

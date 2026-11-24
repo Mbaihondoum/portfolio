@@ -15,6 +15,12 @@ import { PowerBiEmbed } from './power-bi-embed'
 import { ProjectCharts } from './project-charts'
 import { ProjectImage } from './project-image'
 
+// No empty cell when a project has fewer than 3 results.
+const METRIC_COLS: Record<number, string> = {
+  2: 'sm:grid-cols-2',
+  3: 'sm:grid-cols-2 lg:grid-cols-3',
+}
+
 /**
  * Body of a project page. Shared by the public page and the admin preview
  * (drafts included), so what you preview is exactly what gets published.
@@ -148,7 +154,7 @@ export function ProjectDetail({
           </h2>
           <Reveal
             stagger={100}
-            className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3"
+            className={`grid gap-px overflow-hidden rounded-2xl border border-border bg-border ${METRIC_COLS[Math.min(p.metrics.length, 3)] ?? ''}`}
           >
             {p.metrics.map((m) => (
               <div key={m.label} data-reveal-item className="bg-surface p-6 sm:p-8">
@@ -184,7 +190,7 @@ export function ProjectDetail({
       {p.charts.length > 0 && (
         <section className="mt-20">
           <h2 className="mb-6 font-mono text-xs tracking-widest text-muted uppercase">
-            {t.projects.dataGallery}
+            {t.projects.charts}
           </h2>
           <ProjectCharts charts={p.charts} locale={locale} />
         </section>

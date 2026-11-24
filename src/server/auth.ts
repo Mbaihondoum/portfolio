@@ -1,5 +1,5 @@
 import 'server-only'
-import NextAuth from 'next-auth'
+import NextAuth, { type Session } from 'next-auth'
 import GitHub from 'next-auth/providers/github'
 import { connection } from 'next/server'
 import { redirect } from 'next/navigation'
@@ -43,12 +43,29 @@ export type AdminUser = { email: string; name: string | null; image: string | nu
  * Data-access-layer guard. Re-checks the allowlist on every call, so removing
  * an email from ADMIN_EMAILS revokes access immediately.
  */
+/**
+ * True when every variable the admin login needs is set. Without them the
+ * public site still works; the login page explains what to configure.
+ */
+export function isAuthConfigured(e: Record<string, unknown> = process.env): boolean {
+  return ['AUTH_SECRET', 'AUTH_GITHUB_ID', 'AUTH_GITHUB_SECRET', 'ADMIN_EMAILS'].every(
+    (key) => typeof e[key] === 'string' && (e[key] as string).trim() !== '',
+  )
+}
+
 export async function getAdmin(): Promise<AdminUser | null> {
   await connection()
-  const session = await auth()
+  if (!isAuthConfigured()) return null
+  let session: Session | null
+  try {
+    session = await auth()
+  } catch (err) {
+    logger.error('auth.session_failed', { err })
+    return null
+  }
   const email = session?.user?.email
   if (!email || !isAdminEmail(email)) return null
-  return { email, name: session.user?.name ?? null, image: session.user?.image ?? null }
+  return { email, name: session?.user?.name ?? null, image: session?.user?.image ?? null }
 }
 
 export async function requireAdmin(): Promise<AdminUser> {

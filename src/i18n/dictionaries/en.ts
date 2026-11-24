@@ -84,6 +84,7 @@ const en: Dictionary = {
     stack: 'Technologies',
     architecture: 'Architecture',
     results: 'Results',
+    charts: 'Data at a glance',
     gallery: 'Screenshots',
     dataGallery: 'Dashboards & charts',
     details: 'Details',

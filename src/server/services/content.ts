@@ -24,7 +24,9 @@ async function guarded<T>(label: string, fallback: T, fn: () => Promise<T>): Pro
   } catch (err) {
     if (process.env.NEXT_PHASE === 'phase-production-build') {
       logger.warn('content.build_fallback', { label, err })
-      cacheLife('minutes')
+      // Stale after 1 s (but kept in the static shell): the first request at
+      // runtime regenerates it with real data. See scripts/docker-start.mjs.
+      cacheLife({ stale: 300, revalidate: 1, expire: 3600 })
       return fallback
     }
     throw err

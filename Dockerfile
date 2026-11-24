@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1.7
 # Multi-stage image: deps → builder → runner (Next.js standalone output).
+# `tools` (deps + sources, no build) runs migrations/seed in docker compose.
 
 FROM node:22-alpine AS base
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH NEXT_TELEMETRY_DISABLED=1
@@ -11,8 +12,12 @@ FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 
+# ── Tools: sources + full toolchain, no build (compose `migrate` service) ─
+FROM base AS tools
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
 # ── Build ────────────────────────────────────────────────────────────────
-# Also used by the `migrate` compose service (has the full toolchain).
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -32,8 +37,9 @@ RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001 -G nodejs \
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --chown=nextjs:nodejs scripts/docker-start.mjs ./docker-start.mjs
 USER nextjs
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD wget -qO- http://127.0.0.1:3000/api/health || exit 1
-CMD ["node", "server.js"]
+CMD ["node", "docker-start.mjs"]

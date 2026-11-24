@@ -23,7 +23,7 @@ services:
   migrate:
     build:
       context: .
-      target: builder
+      target: tools
     command: sh -c "pnpm db:migrate && pnpm db:seed"
     environment:
       DATABASE_URL: postgres://portfolio:portfolio@db:5432/portfolio

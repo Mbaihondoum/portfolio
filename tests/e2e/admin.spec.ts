@@ -59,8 +59,16 @@ test.describe('Admin access', () => {
       const row = page.getByRole('listitem').filter({ hasText: 'API de commandes' })
       await row.getByRole('button', { name: 'Dépublier' }).click()
       await expect(row.getByRole('button', { name: 'Publier' })).toBeVisible()
-      const res = await page.request.get('/api/projects/api-commandes-paiements')
-      expect(res.status()).toBe(404)
+      // Cache invalidation propagates within a few ms: the very first request
+      // can still get the previous version, so poll briefly.
+      await expect
+        .poll(
+          async () => (await page.request.get('/api/projects/api-commandes-paiements')).status(),
+          {
+            timeout: 5_000,
+          },
+        )
+        .toBe(404)
       await row.getByRole('button', { name: 'Publier' }).click()
       await expect(row.getByRole('button', { name: 'Dépublier' })).toBeVisible()
     })
