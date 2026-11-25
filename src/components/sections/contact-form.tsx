@@ -168,7 +168,7 @@ export function ContactForm({ locale, labels }: { locale: Locale; labels: Labels
             src="https://challenges.cloudflare.com/turnstile/v0/api.js"
             strategy="lazyOnload"
           />
-          <div className="cf-turnstile" data-sitekey={TURNSTILE_KEY} data-theme="dark" />
+          <div className="cf-turnstile" data-sitekey={TURNSTILE_KEY} data-theme="light" />
         </>
       )}
       <div className="flex flex-wrap items-center gap-5">

@@ -11,7 +11,7 @@ import { toSettings } from '@/server/services/dto'
 import { MotionProvider } from '@/components/motion/motion-provider'
 import { ScrollProgress } from '@/components/motion/scroll-progress'
 import { Cursor } from '@/components/motion/cursor'
-import { SiteHeader } from '@/components/layout/site-header'
+import { SiteSidebar } from '@/components/layout/site-sidebar'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { AnalyticsTracker } from '@/components/layout/analytics-tracker'
 
@@ -53,11 +53,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0b' },
-    { media: '(prefers-color-scheme: light)', color: '#fafafa' },
-  ],
-  colorScheme: 'dark light',
+  themeColor: '#ffffff',
+  colorScheme: 'light',
 }
 
 export default async function LocaleLayout({ children }: LayoutProps<'/[locale]'>) {
@@ -81,8 +78,9 @@ export default async function LocaleLayout({ children }: LayoutProps<'/[locale]'
         </a>
         <MotionProvider>
           <ScrollProgress />
-          <SiteHeader
+          <SiteSidebar
             locale={locale}
+            name={settings.fullName}
             initials={settings.initials}
             items={navItems}
             labels={{
@@ -94,10 +92,13 @@ export default async function LocaleLayout({ children }: LayoutProps<'/[locale]'
               contact: t.nav.contact,
             }}
           />
-          <main id="content" tabIndex={-1} className="outline-none">
-            {children}
-          </main>
-          <SiteFooter t={t} settings={settings} locale={locale} />
+          {/* Offset for the fixed sidebar (desktop) / top bar (mobile). */}
+          <div className="lg:pl-72">
+            <main id="content" tabIndex={-1} className="outline-none">
+              {children}
+            </main>
+            <SiteFooter t={t} settings={settings} locale={locale} />
+          </div>
           <Cursor />
         </MotionProvider>
         <AnalyticsTracker locale={locale} />

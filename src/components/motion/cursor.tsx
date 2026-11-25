@@ -42,7 +42,7 @@ export function Cursor() {
       style={{ opacity: visible ? 1 : 0, transition: 'opacity 200ms' }}
     >
       <motion.div
-        className="absolute top-0 left-0 size-1.5 -translate-1/2 rounded-full bg-accent"
+        className="absolute top-0 left-0 size-1.5 -translate-1/2 rounded-full bg-accent shadow-[0_0_0_1.5px_var(--background)]"
         style={{ x, y }}
       />
       <motion.div

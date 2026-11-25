@@ -14,6 +14,7 @@ export type NavItem = { id: string; label: string }
 
 type Props = {
   locale: Locale
+  name: string
   initials: string
   items: NavItem[]
   labels: {
@@ -26,34 +27,19 @@ type Props = {
   }
 }
 
-export function SiteHeader({ locale, initials, items, labels }: Props) {
+/**
+ * Site navigation. Desktop (lg+): fixed blue sidebar on the left, full
+ * height (the page content is offset by `lg:pl-72` in the locale layout).
+ * Below lg: a fixed blue top bar whose burger opens a full-screen menu.
+ */
+export function SiteSidebar({ locale, name, initials, items, labels }: Props) {
   const pathname = usePathname()
   const { lenis } = useMotion()
-  const [hidden, setHidden] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   const [active, setActive] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
   const isHome = pathname === `/${locale}`
   const other: Locale = locale === 'fr' ? 'en' : 'fr'
   const otherHref = pathname.replace(/^\/(fr|en)(?=\/|$)/, `/${other}`)
-
-  // Hide on scroll down, show on scroll up.
-  useEffect(() => {
-    let last = window.scrollY
-    let raf = 0
-    const onScroll = () => {
-      if (raf) return
-      raf = requestAnimationFrame(() => {
-        raf = 0
-        const y = window.scrollY
-        setScrolled(y > 24)
-        if (Math.abs(y - last) > 6) setHidden(y > last && y > 160)
-        last = y
-      })
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   // Active section (home page only).
   useEffect(() => {
@@ -90,64 +76,74 @@ export function SiteHeader({ locale, initials, items, labels }: Props) {
   return (
     <>
       <header
-        style={{ viewTransitionName: 'site-header' }}
-        className={cn(
-          'fixed inset-x-0 top-0 z-50 transition-[transform,background-color,border-color] duration-500 ease-out-expo',
-          hidden && !open ? '-translate-y-full' : 'translate-y-0',
-          scrolled || open
-            ? 'border-b border-border bg-background/75 backdrop-blur-xl'
-            : 'border-b border-transparent',
-        )}
+        style={{ viewTransitionName: 'site-nav' }}
+        className="sidebar fixed inset-x-0 top-0 z-50 h-16 bg-sidebar text-sidebar-foreground lg:inset-y-0 lg:right-auto lg:h-dvh lg:w-72"
       >
-        <div className="container-page flex h-16 items-center justify-between gap-4">
-          <Link
-            href={`/${locale}`}
-            className="group flex items-center gap-2 font-mono text-sm tracking-widest"
-            aria-label={initials}
-          >
-            <span className="grid size-8 place-items-center rounded-lg border border-border-strong text-accent transition-colors group-hover:border-accent">
+        <div className="flex h-full items-center justify-between gap-4 px-4 sm:px-6 lg:flex-col lg:items-stretch lg:justify-start lg:overflow-y-auto lg:px-5 lg:py-8">
+          {/* Accessible name = the full name (visible from lg; screen-reader
+              only below), so the label always matches the visible text. */}
+          <Link href={`/${locale}`} className="group flex items-center gap-3 rounded-lg">
+            <span
+              aria-hidden
+              className="grid size-9 shrink-0 place-items-center rounded-lg border border-sidebar-foreground/40 font-mono text-sm tracking-widest transition-colors group-hover:border-sidebar-foreground"
+            >
               {initials}
             </span>
+            <span className="sr-only font-display text-lg leading-tight font-semibold lg:not-sr-only">
+              {name || initials}
+            </span>
           </Link>
-          <nav aria-label={labels.mainNav} className="hidden lg:block">
-            <ul className="flex items-center gap-1">
-              {items.map((item) => (
-                <li key={item.id} className="relative">
-                  <Link
-                    href={href(item.id)}
-                    aria-current={active === item.id ? 'true' : undefined}
-                    className={cn(
-                      'relative block px-3 py-2 text-sm transition-colors',
-                      active === item.id ? 'text-foreground' : 'text-muted hover:text-foreground',
-                    )}
-                  >
-                    {item.label}
-                    {active === item.id && (
-                      <motion.span
-                        layoutId="nav-underline"
-                        className="absolute inset-x-3 -bottom-px h-px bg-accent"
-                        transition={{ duration: duration.base, ease: bezier.expo }}
-                      />
-                    )}
-                  </Link>
-                </li>
-              ))}
+
+          <nav aria-label={labels.mainNav} className="hidden lg:mt-12 lg:block">
+            <ul className="flex flex-col gap-1">
+              {items.map((item) => {
+                const current = active === item.id
+                return (
+                  <li key={item.id} className="relative">
+                    <Link
+                      href={href(item.id)}
+                      aria-current={current ? 'true' : undefined}
+                      className={cn(
+                        'relative block rounded-lg px-4 py-2.5 transition-colors',
+                        current
+                          ? 'bg-sidebar-foreground/10 font-medium text-sidebar-foreground'
+                          : 'text-sidebar-foreground/85 hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground',
+                      )}
+                    >
+                      {current && (
+                        <motion.span
+                          layoutId="nav-indicator"
+                          className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-sidebar-foreground"
+                          transition={{ duration: duration.base, ease: bezier.expo }}
+                        />
+                      )}
+                      {item.label}
+                    </Link>
+                  </li>
+                )
+              })}
             </ul>
           </nav>
-          <div className="flex items-center gap-1">
-            <Link
-              href={otherHref}
-              hrefLang={other}
-              lang={other}
-              className="grid h-9 place-items-center rounded-full px-3 font-mono text-xs tracking-wider text-muted uppercase transition-colors hover:bg-surface-2 hover:text-foreground"
-            >
-              {other}
-              <span className="sr-only"> — {labels.switchLanguage}</span>
-            </Link>
-            <ThemeToggle label={labels.toggleTheme} />
+
+          <div className="flex items-center gap-1 lg:mt-auto lg:flex-col lg:items-stretch lg:gap-4 lg:pt-8">
+            <div className="flex items-center gap-1 lg:justify-between">
+              <Link
+                href={otherHref}
+                hrefLang={other}
+                lang={other}
+                className="grid h-9 place-items-center rounded-full px-3 font-mono text-xs tracking-wider text-sidebar-foreground/85 uppercase transition-colors hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground"
+              >
+                {other}
+                <span className="sr-only"> — {labels.switchLanguage}</span>
+              </Link>
+              <ThemeToggle
+                label={labels.toggleTheme}
+                className="text-sidebar-foreground/85 hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground"
+              />
+            </div>
             <Link
               href={href('contact')}
-              className="ml-2 hidden h-9 items-center rounded-full bg-accent px-4 text-sm font-medium text-accent-foreground transition-colors hover:bg-accent-strong sm:inline-flex"
+              className="ml-2 hidden h-9 items-center justify-center rounded-full bg-sidebar-foreground px-4 text-sm font-medium text-sidebar transition-opacity hover:opacity-90 sm:inline-flex lg:ml-0 lg:h-10"
             >
               {labels.contact}
             </Link>
@@ -161,13 +157,13 @@ export function SiteHeader({ locale, initials, items, labels }: Props) {
             >
               <span
                 className={cn(
-                  'absolute h-px w-5 bg-foreground transition-transform duration-300',
+                  'absolute h-px w-5 bg-sidebar-foreground transition-transform duration-300',
                   open ? 'rotate-45' : '-translate-y-1',
                 )}
               />
               <span
                 className={cn(
-                  'absolute h-px w-5 bg-foreground transition-transform duration-300',
+                  'absolute h-px w-5 bg-sidebar-foreground transition-transform duration-300',
                   open ? '-rotate-45' : 'translate-y-1',
                 )}
               />
@@ -183,13 +179,13 @@ export function SiteHeader({ locale, initials, items, labels }: Props) {
             role="dialog"
             aria-modal="true"
             aria-label={labels.mainNav}
-            className="fixed inset-0 z-40 bg-background pt-20 lg:hidden"
+            className="sidebar fixed inset-0 z-40 bg-sidebar pt-20 text-sidebar-foreground lg:hidden"
             initial={{ clipPath: 'circle(0% at calc(100% - 2.5rem) 2rem)' }}
             animate={{ clipPath: 'circle(150% at calc(100% - 2.5rem) 2rem)' }}
             exit={{ clipPath: 'circle(0% at calc(100% - 2.5rem) 2rem)' }}
             transition={{ duration: duration.slow * 0.8, ease: bezier.inOut }}
           >
-            <nav className="container-page flex h-full flex-col bg-blueprint">
+            <nav className="container-page flex h-full flex-col">
               <ul className="flex flex-col gap-1">
                 {[...items, { id: 'contact', label: labels.contact }].map((item, i) => (
                   <motion.li
@@ -205,9 +201,9 @@ export function SiteHeader({ locale, initials, items, labels }: Props) {
                     <Link
                       href={href(item.id)}
                       onClick={() => setOpen(false)}
-                      className="flex items-baseline gap-4 border-b border-border py-4 font-display text-3xl font-semibold"
+                      className="flex items-baseline gap-4 border-b border-sidebar-foreground/20 py-4 font-display text-3xl font-semibold"
                     >
-                      <span className="font-mono text-xs text-accent">
+                      <span className="font-mono text-xs text-sidebar-foreground/85">
                         {String(i + 1).padStart(2, '0')}
                       </span>
                       {item.label}

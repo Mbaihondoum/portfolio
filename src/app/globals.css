@@ -1,10 +1,40 @@
 @import 'tailwindcss';
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Design tokens — dark by default, light theme via [data-theme='light'].
-   Palette: deep black, white, light blue accent (used sparingly).
+   Design tokens — light (white background) by default, dark theme via
+   [data-theme='dark']. Palette: white, near-black, blue accent (used sparingly).
    ───────────────────────────────────────────────────────────────────────── */
 :root {
+  --background: #ffffff;
+  --surface: #fafafa;
+  --surface-2: #f4f4f5;
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --foreground: #0a0a0b;
+  --muted: #52525b;
+  --subtle: #66666f;
+  --accent: #0369a1;
+  --accent-strong: #075985;
+  --accent-foreground: #ffffff;
+  --accent-soft: rgb(3 105 161 / 0.08);
+  --accent-glow: rgb(3 105 161 / 0.25);
+  --danger: #b91c1c;
+  --success: #15803d;
+  --grid-line: rgb(3 105 161 / 0.16);
+  --sidebar: #0369a1;
+  --sidebar-foreground: #ffffff;
+  color-scheme: light;
+
+  /* Motion tokens (mirrored in src/motion.config.ts) */
+  --dur-fast: 200ms;
+  --dur-base: 500ms;
+  --dur-slow: 900ms;
+  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1); /* power3.out */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1); /* expo.out */
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1); /* power2.inOut */
+}
+
+[data-theme='dark'] {
   --background: #0a0a0b;
   --surface: #111114;
   --surface-2: #16161a;
@@ -20,36 +50,10 @@
   --accent-glow: rgb(56 189 248 / 0.35);
   --danger: #f87171;
   --success: #4ade80;
-  --grid-line: rgb(255 255 255 / 0.035);
+  --grid-line: rgb(125 211 252 / 0.12);
+  --sidebar: #0c4a6e;
+  --sidebar-foreground: #ffffff;
   color-scheme: dark;
-
-  /* Motion tokens (mirrored in src/motion.config.ts) */
-  --dur-fast: 200ms;
-  --dur-base: 500ms;
-  --dur-slow: 900ms;
-  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1); /* power3.out */
-  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1); /* expo.out */
-  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1); /* power2.inOut */
-}
-
-[data-theme='light'] {
-  --background: #fafafa;
-  --surface: #ffffff;
-  --surface-2: #f4f4f5;
-  --border: #e4e4e7;
-  --border-strong: #d4d4d8;
-  --foreground: #0a0a0b;
-  --muted: #52525b;
-  --subtle: #66666f;
-  --accent: #0369a1;
-  --accent-strong: #075985;
-  --accent-foreground: #ffffff;
-  --accent-soft: rgb(3 105 161 / 0.08);
-  --accent-glow: rgb(3 105 161 / 0.25);
-  --danger: #b91c1c;
-  --success: #15803d;
-  --grid-line: rgb(0 0 0 / 0.04);
-  color-scheme: light;
 }
 
 @theme inline {
@@ -67,9 +71,11 @@
   --color-accent-soft: var(--accent-soft);
   --color-danger: var(--danger);
   --color-success: var(--success);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-bricolage), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
 
   --ease-out-power: var(--ease-out);
@@ -100,6 +106,10 @@
     outline: 2px solid var(--accent);
     outline-offset: 3px;
     border-radius: 4px;
+  }
+  /* The accent blue would vanish on the blue sidebar. */
+  .sidebar :focus-visible {
+    outline-color: var(--sidebar-foreground);
   }
   h1,
   h2,

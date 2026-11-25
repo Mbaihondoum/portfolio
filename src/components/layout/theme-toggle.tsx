@@ -1,6 +1,13 @@
 'use client'
 
-export function ThemeToggle({ label }: { label: string }) {
+export function ThemeToggle({
+  label,
+  className = 'text-muted hover:bg-surface-2 hover:text-foreground',
+}: {
+  label: string
+  /** Colour classes (default suits the page background). */
+  className?: string
+}) {
   return (
     <button
       type="button"
@@ -8,13 +15,13 @@ export function ThemeToggle({ label }: { label: string }) {
       title={label}
       onClick={() => {
         const d = document.documentElement
-        const next = d.dataset.theme === 'light' ? 'dark' : 'light'
+        const next = d.dataset.theme === 'dark' ? 'light' : 'dark'
         d.dataset.theme = next
         try {
           localStorage.setItem('theme', next)
         } catch {}
       }}
-      className="grid size-9 place-items-center rounded-full text-muted transition-colors hover:bg-surface-2 hover:text-foreground"
+      className={`grid size-9 place-items-center rounded-full transition-colors ${className}`}
     >
       <svg
         aria-hidden
